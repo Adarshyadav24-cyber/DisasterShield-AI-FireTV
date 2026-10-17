@@ -1,0 +1,26 @@
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   Copyright 2026 DisasterShield AI Contributors
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+--------------------------------------------------------------------------------
+THIRD-PARTY MODEL COMPLIANCE & ATTRIBUTION NOTICE:
+Google Gemma:
+This application is designed to optionally interface with Google Gemma 4 (such as
+gemma4:e2b) via a user-hosted endpoint. Gemma models are governed by the Gemma
+Terms of Use and Gemma Open Model License agreement. No proprietary weights or
+restricted assets are bundled within this repository.
+--------------------------------------------------------------------------------
