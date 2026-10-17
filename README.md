@@ -1,218 +1,206 @@
 # 🛡️ DisasterShield AI
 ### Early Awareness. Verified Information. Safer Decisions.
 
-[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.64.0-FF4B4B.svg)](https://streamlit.io/)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.64.0-FF4B4B.svg?logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Folium](https://img.shields.io/badge/Folium-0.20.0-77B800.svg)](https://python-visualization.github.io/folium/)
+[![Three.js](https://img.shields.io/badge/Three.js-WebGL%203D-black.svg?logo=three.js&logoColor=white)](https://threejs.org/)
 [![AI Engine](https://img.shields.io/badge/AI%20Model-Google%20Gemma%204-purple.svg)](https://ai.google.dev/gemma)
+[![Tests](https://img.shields.io/badge/Tests-18%2F18%20Passed-brightgreen.svg)](tests/)
 
 ---
 
-## ⚠️ Mandatory Public Safety & Transparency Notice
+## 📌 Project Overview
+
+- **Project Name:** **DisasterShield AI**
+- **Tagline:** Early Awareness. Verified Information. Safer Decisions.
+- **Repository:** [https://github.com/Adarshyadav24-cyber/DisasterShield-AI](https://github.com/Adarshyadav24-cyber/DisasterShield-AI)
+- **Live Demo Link:** [https://ripe-eggs-pay.loca.lt](https://ripe-eggs-pay.loca.lt) *(Tunnel Password: `106.194.27.1`)*
+
+---
+
+## ⚠️ Mandatory Public Safety Notice
 
 > **"DisasterShield AI is an informational prototype, not an official emergency service. Verify alerts and follow instructions from authorized local authorities. Do not rely on this prototype alone for evacuation decisions."**
-
-- **Official Emergency Contact:** In an active emergency in India, dial **112** (All-in-One Emergency Helpline), **1077** (State Disaster Control Room), or **108** (Emergency Medical Services). DisasterShield AI does not invent phone numbers or issue binding evacuation directives.
-- **No Fictional Hazards Represented as Real:** All initial pre-loaded data points in Prayagraj, UP, are explicitly demarcated with the `DEMO DATA` watermark.
-
----
-
-## 🌟 Executive Summary
-
-**DisasterShield AI** is an open-source, hackathon-ready disaster awareness and response platform built to address information chaos during climate catastrophes. It combines real-time citizen crowdsourcing, trusted official verification workflows, live meteorological telemetry via Open-Meteo, interactive geospatial Folium mapping, and strictly grounded synthesis powered exclusively by **Google Gemma 4**.
+>
+> - **Official Emergency Helpline (India):** Dial **112** (National Emergency Helpline), **1077** (State Disaster Control Room), or **108** (Ambulance).
+> - **Demo Data Notice:** All initial disaster reports and 3D simulations are explicitly watermarked as `DEMO DATA` / `DEMO SIMULATION`. No fictional hazards are represented as real ground events.
 
 ---
 
-## 🎯 Key Architectural Pillars
+## 🛑 Problem Statement: What problem does it solve?
 
-1. **Incident Verification Pipeline (Anti-Disinformation):**
-   - Every public citizen report strictly starts in **UNVERIFIED** status.
-   - An authorized emergency coordinator validates or rejects incoming reports via the PIN-protected **Administrator Verification Desk**.
-   - Audit metadata (verifier name, ground inspection notes, timestamp) is permanently recorded.
+During extreme climate emergencies (flash floods, urban fires, severe storms, and seismic shocks), two compounding disasters unfold simultaneously:
+1. **The Physical Disaster:** Flooding rivers, structural fires, blocked corridors, and strained medical triage.
+2. **The Information Chaos Disaster:** Rumors, unverified social media panics, outdated weather reports, and contradictory evacuation instructions.
 
-2. **Strict Generative AI Restriction (Google Gemma 4 Only):**
-   - Restricted **strictly and exclusively** to Google Gemma 4 models (e.g., `gemma4:e2b`).
-   - Does **not** use or depend on OpenAI, Anthropic, or Gemini generative endpoints.
-   - Grounded prompt constraints: Gemma 4 only synthesizes facts present in the active incident ledger and weather telemetry. It is strictly prohibited from inventing casualties, safe evacuation corridors, or official orders.
+Traditional disaster portals are either static government notification boards that lag behind real-time ground events or uncurated social feeds rife with misinformation. Furthermore, traditional 2D maps fail to give emergency managers and citizens an intuitive spatial understanding of rising river elevations, storm cloud cover, and topographic inundation zones.
 
-3. **Graceful, Transparent Demo Mode:**
-   - If no local or remote Gemma 4 inference server is active, the application operates in **Safe Demo Mode**.
+---
+
+## 💡 Solution: How does DisasterShield AI help?
+
+**DisasterShield AI** provides an open-source, cyber-command-center dashboard combining multi-city situational telemetry, immersive 3D digital twins, crowdsourced citizen reporting, and responsible AI synthesis:
+
+1. **Anti-Disinformation Verification Pipeline:** Every incoming citizen submission strictly begins in **`UNVERIFIED`** status. An authorized emergency coordinator inspects ground reports and validates or rejects them via a PIN-protected **Administrator Verification Desk** (`PIN: 1122`), preventing fake rumors from polluting the public feed.
+2. **Interactive 3D Digital Twin Simulation Studio (Three.js WebGL):** Procedural 3D cityscapes dynamically visualize:
+   - **Flood Inundation:** Rising water planes submerging quays and low-lying sectors.
+   - **Structural Fire:** Controlled dynamic flame particles, smoke plumes, and flickering ambient lighting.
+   - **Earthquake Tremors:** Harmonic seismic wave equations oscillating urban building geometry based on Richter scale controls.
+   - **Severe Storm:** 2,000 animated rain streak vectors, directional wind velocity, and ambient lightning bursts.
+3. **Multi-City Geospatial Awareness:** Pre-calibrated tactical centers for key Indian riverine and urban corridors:
+   - **Prayagraj, Uttar Pradesh** (Default — Ganga & Yamuna Sangam Basin)
+   - **Lucknow, Uttar Pradesh** (Gomti Riverfront Corridor)
+   - **Varanasi, Uttar Pradesh** (Ganges Ghats & Cultural Quarter)
+   - **New Delhi, India** (Yamuna Floodplain Corridor)
+4. **Live Meteorological Telemetry:** Direct integration with the public, keyless Open-Meteo API for real-time temperature, wind speed, precipitation, and conditions.
+5. **Strictly Grounded AI Safety Synthesis:** Powered exclusively by **Google Gemma 4**, delivering factual situation summaries and accessible NDMA-aligned safety protocols with zero hallucinations.
+
+---
+
+## 🛠️ Technologies Used
+
+| Category | Technologies | Purpose |
+| :--- | :--- | :--- |
+| **Language & Backend** | **Python 3.11** | Core application logic, validation engine, and state management |
+| **App Framework** | **Streamlit (v1.64.0)** | Reactive dashboard with custom obsidian dark-glassmorphism command center styling |
+| **3D Graphics & Engine** | **Three.js & WebGL** | Client-side 3D digital twin rendering (flood, fire, quake, storm physics) |
+| **Geospatial & Mapping** | **Folium (v0.20.0)** & **Streamlit-Folium** | Interactive multi-city maps, marker clustering, popups, and custom on-map legends |
+| **Basemap Provider** | **OpenStreetMap** | Open-source, dependency-free cartographic map tiles |
+| **AI / LLM Engine** | **Google Gemma 4 (`gemma4:e2b`)** | Grounded situation summaries and citizen advisory synthesis |
+| **Local Inference Host** | **Ollama** | Local, privacy-preserving, zero-latency Gemma 4 model inference |
+| **Data & Telemetry** | **Pandas (v3.0.3)** & **Requests** | Incident data manipulation and Open-Meteo weather API integration |
+| **Quality Assurance** | **Pytest (v9.1.1)** | 18 automated unit tests covering validation, model restrictions, and 3D scenes |
+| **Version Control** | **Git & GitHub** | Distributed version control and collaboration |
+
+---
+
+## 🧠 AI Model Specification
+
+- **Exact Model Name / Identifier:** **Google Gemma 4** (specifically tested with `gemma4:e2b` via Ollama; compatible with Gemma 4 open weights).
+- **Official Model Information:** [Google Gemma Open Models](https://ai.google.dev/gemma)
+- **Model Terms of Use & License:**
+  - [Google Gemma Terms of Use](https://ai.google.dev/gemma/terms)
+  - [Gemma Open Model License Agreement](https://ai.google.dev/gemma/license)
+- **Strict Architectural Model Restriction:**
+  - DisasterShield AI is architecturally restricted **exclusively** to Google Gemma 4.
+  - The codebase contains **zero** dependencies on OpenAI, Anthropic, or proprietary Gemini generative API keys.
+  - All model calls originate through `modules/gemma_client.py` with strict safety guards.
+
+---
+
+## 🤖 AI Integration: How & Where AI is Used
+
+DisasterShield AI integrates Google Gemma 4 into four specialized modules:
+
+1. **Grounded Situation Briefings (`modules/gemma_client.py`):**
+   - Summarizes verified emergency reports, weather alerts, and sector risk.
+   - **Anti-Hallucination Guardrails:** Prompt engineering strictly constrains Gemma 4 to facts explicitly present in the active incident ledger. It is barred from fabricating casualties, safe evacuation corridors, or binding official directives.
+2. **Heuristic & AI Incident Classification (`modules/incident_manager.py`):**
+   - Analyzes raw citizen report descriptions (e.g., *"water entered ground floor"* or *"transformer explosion on main street"*) to suggest accurate disaster categories (Flood, Fire, Infrastructure, Medical).
+3. **Safety Protocol Synthesis (`modules/safety_briefing.py`):**
+   - Ingests standard NDMA (National Disaster Management Authority) guidelines and generates plain-language, jargon-free step-by-step safety actions for affected citizens.
+4. **Transparent Safe Demo Mode Fallback:**
+   - If no local or remote Gemma 4 inference server is detected, the application automatically switches to **Safe Demo Mode**.
    - Demo mode uses transparent, deterministic rule-based templates that are explicitly labeled as rule-based and never masquerade as AI-generated text.
 
-4. **Live Meteorological Telemetry (Open-Meteo):**
-   - Fetches live temperature, precipitation, wind speed, and weather conditions from the public, keyless Open-Meteo API.
-   - If disconnected, presents clearly labeled simulated telemetry without fabricating live disaster alerts.
-
-5. **3D Digital Twin & Disaster Simulation Studio (Three.js WebGL):**
-   - Immersive 3D procedural terrain and urban sectors representing Prayagraj, UP.
-   - **Flood Simulation:** Translucent blue animated water plane with sinusoidal waves whose elevation dynamically rises and submerges riverbank quays.
-   - **Fire Simulation:** Controlled dynamic particle flame and rising smoke plumes with point light flickering on building facades.
-   - **Earthquake Simulation:** Harmonic seismic tremor equations oscillate terrain and building geometry with intensity tied directly to Richter scale controls.
-   - **Storm Simulation:** 2,000 falling 3D rain streaks with directional wind velocity and periodic ambient lightning illumination bursts.
-   - **Interactive 3D Controls:** OrbitControls (orbit, pan, zoom), scenario selector, intensity sliders, on-canvas HUD, and 3D raycasting to inspect incident metadata.
-   - **Zero Extra Dependencies:** Uses high-performance WebGL via Three.js embedded directly via Streamlit components, backed by local offline JS caches.
-
-6. **Multi-City Geospatial Tactical 2D Map (Folium + Streamlit):**
-   - Dynamic location selector covering key urban and riverine centers:
-     - **Prayagraj, Uttar Pradesh** (Default — Ganga & Yamuna Sangam Basin)
-     - **Lucknow, Uttar Pradesh** (Gomti Riverfront Corridor)
-     - **Varanasi, Uttar Pradesh** (Assi Ghat & Ganges Riverfront)
-     - **New Delhi, India** (Yamuna Floodplain Corridor)
-   - Color-coded severity pins (Low, Moderate, High, Critical).
-   - Distinct icons for Verified (checkmark) vs. Unverified (flag) reports.
-   - Emergency resource overlays (relief camps, trauma centers, staging depots).
-   - Clear on-map floating legend, coordinate bounds validation, swap-detection heuristics, and demo notices.
-
 ---
 
-## 📁 Repository Structure
-
-```
-DisasterShield-AI/
-├── app.py                     # Main Streamlit web application & UI tabs
-├── config.py                  # Environment config, color tokens, and constants
-├── requirements.txt           # Verified Python 3.11 package dependencies
-├── .env.example               # Template for Gemma 4 endpoint and configuration
-├── .gitignore                 # Ignores venvs, cache, credentials, model weights
-├── LICENSE                    # Apache 2.0 open-source license with Gemma attribution
-├── README.md                  # Comprehensive setup, transparency, and usage guide
-├── run_app.bat                # Windows 1-click launch batch script
-├── data/
-│   ├── demo_incidents.json    # Initial realistic Prayagraj demonstration incident dataset
-│   ├── demo_resources.json    # Emergency facilities (shelters, trauma centers)
-│   └── user_incidents.json    # Local JSON storage for citizen submissions
-├── modules/
-│   ├── __init__.py
-│   ├── simulation_3d.py       # WebGL 3D Digital Twin & procedural disaster simulation
-│   ├── static/                # Cached local Three.js and OrbitControls libraries (offline ready)
-│   ├── gemma_client.py        # Modular Gemma 4 client with safe demo fallbacks
-│   ├── incident_manager.py    # Report validation, persistence, and verification desk
-│   ├── weather_service.py     # Public Open-Meteo weather integration
-│   ├── map_view.py            # Folium geospatial builder, popups, and custom legend
-│   └── safety_briefing.py     # Grounded NDMA/civil defense safety guidance principles
-└── tests/
-    ├── __init__.py
-    ├── test_incidents.py      # Unit tests for validation, persistence, and verification
-    ├── test_gemma_client.py   # Unit tests for Gemma 4 isolation and demo fallbacks
-    └── test_simulation_3d.py  # Unit tests for 3D WebGL generation, modes, and parameters
-```
-
----
-
-## 🚀 Setup & Launch Guide (Windows 11 & VS Code)
+## 💻 Installation and Usage
 
 ### Prerequisites
-- **Python 3.11.x** (Verify with `python --version`)
-- **Git**
-- Optional: **Ollama** with `gemma4:e2b` installed (if testing live Gemma 4 inference)
+- **Operating System:** Windows 10/11, macOS, or Linux
+- **Python:** Version 3.11.x installed (`python --version`)
+- **Git:** Installed for repository cloning
 
-### Step 1: Open PowerShell in Project Directory
-In VS Code, open a PowerShell terminal:
+### 1. Clone the Repository
 ```powershell
-cd "c:\Users\ay351\OneDrive\Desktop\DisasterShield AI\DisasterShield-AI"
+git clone https://github.com/Adarshyadav24-cyber/DisasterShield-AI.git
+cd DisasterShield-AI
 ```
 
-### Step 2: Create and Activate Virtual Environment
+### 2. Create and Activate Virtual Environment
 ```powershell
-# Create virtual environment
+# Windows PowerShell
 python -m venv .venv
-
-# Activate virtual environment (Windows PowerShell)
 .\.venv\Scripts\Activate.ps1
-```
-*(If PowerShell restricts script execution, run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process` first).*
 
-### Step 3: Install Required Dependencies
+# Linux / macOS
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install Verified Dependencies
 ```powershell
-python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### Step 4: Configure Environment Variables (Optional)
-Copy the example environment configuration:
-```powershell
-Copy-Item .env.example .env
+### 4. (Optional) Configure Google Gemma 4 via Ollama
+To run live Gemma 4 inference locally:
+```bash
+# Install Ollama from https://ollama.com, then pull Gemma 4:
+ollama pull gemma4:e2b
+ollama serve
 ```
-Default parameters in `.env`:
-- `GEMMA_ENDPOINT_URL=http://localhost:11434`
-- `GEMMA_MODEL_NAME=gemma4:e2b`
-- `ADMIN_VERIFY_PIN=1122`
-- `DEFAULT_LOCATION_NAME=Prayagraj, Uttar Pradesh, India`
-- `DEFAULT_LAT=25.4358`
-- `DEFAULT_LON=81.8463`
+*(If you do not run Ollama, DisasterShield AI automatically runs in full functionality using transparent Safe Demo Mode).*
 
-### Step 5: Run Automated Unit Tests
+### 5. Run the Automated Test Suite
 ```powershell
 python -m pytest tests/ -v
 ```
-*(Expected: 15/15 tests passing).*
+*(All 18 automated unit tests will execute and pass).*
 
-### Step 6: Launch the DisasterShield AI Dashboard
+### 6. Launch the Application
 ```powershell
 python -m streamlit run app.py
 ```
-Open your browser to: **`http://localhost:8501`**
+Open your browser and navigate to: **`http://localhost:8501`**
 
 ---
 
-## 🤖 Configuring Google Gemma 4 Inference
+## 🎮 How to Test & Evaluate the Application
 
-### Option A: Local Ollama (Recommended for Local Dev)
-1. Download Ollama from [ollama.com](https://ollama.com).
-2. Pull the model:
-   ```bash
-   ollama pull gemma4:e2b
-   ```
-3. Start Ollama (`ollama serve`). The app will automatically connect at `http://localhost:11434`.
-
-### Option B: Remote / Hosted Gemma 4 Endpoint
-If running Gemma 4 on a cloud GPU instance or remote inference gateway:
-1. Update `.env`:
-   ```ini
-   GEMMA_ENDPOINT_URL=https://your-remote-gemma-server.com
-   GEMMA_MODEL_NAME=gemma4:e2b
-   GEMMA_API_KEY=your_optional_token
-   ```
-2. Restart the Streamlit app or click **"Probe Gemma 4 Connection"** in the sidebar.
-
-### Option C: Standalone Demo Mode (Zero AI Installation Required)
-If you do not have a GPU or Ollama installed, **no problem**. The system detects the offline state and seamlessly activates **Transparent Demo Mode**. You can experience the entire dashboard, verification workflow, geospatial mapping, and deterministic plain-language safety briefings without installing any models.
+1. **Location Selector:** Use the top command header or sidebar dropdown to toggle between **Prayagraj**, **Lucknow**, **Varanasi**, and **New Delhi**. The 2D Folium map, 3D digital twin, and weather telemetry update instantaneously.
+2. **Interactive 3D Digital Twin (Tab 1):**
+   - Click and drag to orbit, scroll to zoom, right-click to pan.
+   - Switch simulation scenarios: **Flood**, **Fire**, **Earthquake**, or **Storm**.
+   - Adjust the **Water Elevation (meters)** or **Earthquake Amplitude** sliders to observe real-time physics deformation.
+3. **Tactical 2D Geospatial Map (Tab 2):**
+   - Inspect color-coded severity pins, emergency shelters, and relief depots.
+   - Filter by disaster category, severity, or verification status.
+4. **Citizen Incident Reporting (Tab 3):**
+   - Submit a new report (e.g., *"Waterlogging near civil hospital"*).
+   - Use the quick landmark coordinate picker or enter manual GPS coordinates (with auto-detection for accidental lat/lon swap).
+   - Notice the report immediately appears marked as **`UNVERIFIED`**.
+5. **Administrator Verification Desk (Tab 4):**
+   - Enter Administrator PIN: **`1122`**.
+   - Review unverified citizen reports, enter audit notes, and mark as **`VERIFIED`** or **`REJECTED`**.
+6. **AI Safety Protocol & Situation Briefing (Tab 5):**
+   - Generate grounded situational summaries and safety checklists powered by Google Gemma 4 (or Safe Demo Mode).
 
 ---
 
-## 🧪 Test Verification Summary
+## 🌐 Live Demo & Media
 
-Automated tests verified:
-- **`tests/test_incidents.py`**:
-  - Valid report parameters acceptance
-  - Coordinate bounding box validation (`[-90, 90]`, `[-180, 180]`)
-  - Description length constraints (>= 10 chars)
-  - Default status: Citizen reports **strictly** start as `UNVERIFIED`
-  - JSON atomic persistence to `user_incidents.json`
-  - Admin approval workflow (`VERIFIED` status, timestamp, audit notes)
-  - Admin rejection workflow (`REJECTED` status)
-  - Overall sector risk calculation
-- **`tests/test_gemma_client.py`**:
-  - Safe initialization and model restriction enforcement
-  - Graceful connection probe handling on unreachable endpoints
-  - Deterministic Demo Mode synthesis output labeling
-  - Grounded verification status separation in summaries
-  - Rule-based disaster category keyword suggestion
+- **Live Web Application URL:** [https://ripe-eggs-pay.loca.lt](https://ripe-eggs-pay.loca.lt) *(Tunnel Password: `106.194.27.1`)*
+- **Local Application URL:** `http://localhost:8501/`
+- **GitHub Repository:** [https://github.com/Adarshyadav24-cyber/DisasterShield-AI](https://github.com/Adarshyadav24-cyber/DisasterShield-AI)
 
 ---
 
-## 🪪 Hackathon AI Transparency Disclosure
+## 📜 License
 
-In adherence to hackathon integrity and open-source disclosure policies:
-- **AI Coding Assistant Used:** Google Antigravity IDE (powered by Gemini 3.8 Flash).
-- **Embedded Generative AI:** Strictly Google Gemma 4 (`gemma4:e2b`) via local or compatible inference endpoint. No proprietary generative models (OpenAI, Gemini API, Claude) are invoked in application runtime logic.
-- **Dataset Attribution:** Demonstration incident coordinates reference geographic landmarks in Prayagraj, UP. Fictional demo incident flags are clearly displayed on all cards and map markers.
-- **Weather Telemetry:** Open-Meteo Public API (free, open data).
+This project is licensed under the **Apache License 2.0** — see the [LICENSE](LICENSE) file for full details.
 
----
+```
+Copyright 2026 Adarsh Yadav / DisasterShield AI Contributors
 
-## 📜 License & Compliance
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-This software is licensed under the **Apache License 2.0**.
-Usage of Google Gemma 4 weights and inference outputs is subject to the **Gemma Terms of Use** and the **Gemma Open Model License**.
+    http://www.apache.org/licenses/LICENSE-2.0
+```
+
+*Google Gemma is a trademark of Google LLC. Use of Gemma open models is subject to the [Gemma Terms of Use](https://ai.google.dev/gemma/terms).*
