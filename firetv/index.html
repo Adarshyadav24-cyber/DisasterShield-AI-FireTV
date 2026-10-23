@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DisasterShield AI — Fire TV Edition</title>
+  <meta name="description" content="Prepare Smarter. Respond Safer. Household disaster preparedness and emergency response command center for Fire TV.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="./tv_style.css">
+</head>
+<body>
+
+  <div id="tv-app-root">
+    
+    <!-- Top Command Header -->
+    <header class="tv-header">
+      <div class="brand-section">
+        <span class="brand-icon">🛡️</span>
+        <div>
+          <h1 class="brand-title">DisasterShield AI</h1>
+          <div class="brand-tagline">
+            <span class="live-beacon"></span>
+            <strong>Prepare Smarter. Respond Safer.</strong>
+            <span>• Fire TV Edition</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-status-telemetry">
+        <div class="telemetry-chip">
+          SECTOR: <strong class="active-sector-label">Prayagraj, Uttar Pradesh</strong>
+        </div>
+        <div class="telemetry-chip">
+          TIME: <strong id="tv-clock">12:00:00</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top Navigation Bar (D-Pad Navigable) -->
+    <nav class="tv-nav-bar" id="tv-nav-bar" role="navigation" aria-label="Main Navigation">
+      <button class="nav-tab-btn active default-focus" data-screen="home" tabindex="0">
+        <span>📊</span> Home
+      </button>
+      <button class="nav-tab-btn" data-screen="checklist" tabindex="0">
+        <span>📋</span> Checklist
+      </button>
+      <button class="nav-tab-btn" data-screen="ai" tabindex="0">
+        <span>🤖</span> AI Assistant
+      </button>
+      <button class="nav-tab-btn" data-screen="guidance" tabindex="0">
+        <span>📢</span> Safety Guidance
+      </button>
+      <button class="nav-tab-btn" data-screen="map" tabindex="0">
+        <span>🗺️</span> Tactical Map
+      </button>
+      <button class="nav-tab-btn" data-screen="resources" tabindex="0">
+        <span>📞</span> Helplines
+      </button>
+      <button class="nav-tab-btn" data-screen="simulation" tabindex="0">
+        <span>🌐</span> 3D Digital Twin
+      </button>
+      <button class="nav-tab-btn" data-screen="settings" tabindex="0">
+        <span>⚙️</span> Settings
+      </button>
+    </nav>
+
+    <!-- Main Screens Container -->
+    <main class="tv-screen-container" id="tv-screen-container">
+
+      <!-- ===================================================================
+           SCREEN 0: HOME DASHBOARD
+           =================================================================== -->
+      <section class="screen active" id="screen-home" aria-labelledby="home-heading">
+        <!-- Safety Disclaimer Banner -->
+        <div class="tv-alert-banner">
+          <span style="font-size: 20px;">⚠️</span>
+          <div>
+            <strong>SAFETY & TRANSPARENCY NOTICE:</strong> DisasterShield AI is an informational prototype, not an official emergency dispatch service. Always follow verified instructions from local district administration and NDMA sirens.
+          </div>
+        </div>
+
+        <!-- Hero Metric Cards Grid -->
+        <div class="dashboard-hero-grid">
+          <div class="metric-tv-card">
+            <div class="metric-tv-value" id="metric-total">12</div>
+            <div class="metric-tv-label">Total Reports Recorded</div>
+          </div>
+          <div class="metric-tv-card" style="border-top: 4px solid #10b981;">
+            <div class="metric-tv-value" id="metric-verified" style="color: #34d399;">7</div>
+            <div class="metric-tv-label">Verified Official</div>
+          </div>
+          <div class="metric-tv-card" style="border-top: 4px solid #f59e0b;">
+            <div class="metric-tv-value" id="metric-unverified" style="color: #fbbf24;">5</div>
+            <div class="metric-tv-label">Unverified Citizen</div>
+          </div>
+          <div class="metric-tv-card" style="border-top: 4px solid #ef4444;">
+            <div class="metric-tv-value" id="metric-threat" style="color: #f87171;">MODERATE</div>
+            <div class="metric-tv-label">Sector Threat Level</div>
+          </div>
+        </div>
+
+        <!-- 2-Column Sections -->
+        <div class="dashboard-sections-grid">
+          
+          <!-- Left Column: Quick Actions & Weather Telemetry -->
+          <div>
+            <!-- Weather Card -->
+            <div class="tv-panel" style="margin-bottom: 20px; background: linear-gradient(135deg, #0b172e 0%, #060e1d 100%);">
+              <div class="panel-title">
+                <span>🌤️ Environmental Telemetry</span>
+                <span id="weather-badge" style="font-size: 11px; font-weight: 700; color: #34d399; background: rgba(52, 211, 153, 0.15); padding: 3px 8px; border-radius: 4px;">
+                  LIVE TELEMETRY
+                </span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 700; color: #fff;" id="weather-cond">Partly Cloudy ⛅</div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Source: <span id="weather-source">Open-Meteo API</span></div>
+                </div>
+                <div style="display: flex; gap: 20px; font-family: 'JetBrains Mono', monospace; font-size: 18px; color: #38bdf8;">
+                  <div>Temp: <strong style="color: #fff;" id="weather-temp">28°C</strong></div>
+                  <div>Wind: <strong style="color: #fff;" id="weather-wind">14 km/h</strong></div>
+                  <div>Rain: <strong style="color: #fff;" id="weather-precip">0 mm</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Action Tiles -->
+            <div class="tv-panel">
+              <div class="panel-title">⚡ Emergency Action Launchpad</div>
+              <div class="quick-actions-grid">
+                <button class="action-tile-btn tv-card" data-target="checklist" tabindex="0">
+                  <span class="action-tile-icon">📋</span>
+                  <span class="action-tile-title">Preparedness Checklist</span>
+                  <span class="action-tile-desc">Household readiness is at <strong id="home-readiness-stat" style="color: #10b981;">20%</strong>. Review vital supplies.</span>
+                </button>
+                <button class="action-tile-btn tv-card" data-target="ai" tabindex="0">
+                  <span class="action-tile-icon">🤖</span>
+                  <span class="action-tile-title">AI Safety Assistant</span>
+                  <span class="action-tile-desc">Ask emergency questions powered by Google Gemma 4.</span>
+                </button>
+                <button class="action-tile-btn tv-card" data-target="guidance" tabindex="0">
+                  <span class="action-tile-icon">📢</span>
+                  <span class="action-tile-title">Hazard Guidance</span>
+                  <span class="action-tile-desc">Actionable safety protocols for Flood, Fire, Earthquake, and Storms.</span>
+                </button>
+                <button class="action-tile-btn tv-card" data-target="resources" tabindex="0">
+                  <span class="action-tile-icon">📞</span>
+                  <span class="action-tile-title">Official Helplines</span>
+                  <span class="action-tile-desc">Direct access to 112, 1077, 108, and emergency relief shelters.</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Recent Incident Feed -->
+          <div class="tv-panel">
+            <div class="panel-title">
+              <span>🚨 Active Incident Ledger</span>
+              <span style="font-size: 12px; color: var(--text-dim); font-weight: normal;">Sector: <strong class="active-sector-label" style="color: #38bdf8;">Prayagraj</strong></span>
+            </div>
+            <div id="home-incidents-feed">
+              <!-- Rendered via JavaScript -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 1: EMERGENCY PREPAREDNESS CHECKLIST
+           =================================================================== -->
+      <section class="screen" id="screen-checklist" aria-labelledby="checklist-heading">
+        <div class="checklist-header-box">
+          <div>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; color: #fff;">Household Preparedness Center</h2>
+            <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+              Essential supplies and safety items for surviving the first 72 hours of an emergency. State persists locally on this TV.
+            </div>
+          </div>
+          <div>
+            <div style="font-size: 13px; font-weight: 700; color: #fff; text-align: right;" id="checklist-progress-text">
+              2 of 10 items completed (20%)
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="checklist-progress-fill" style="width: 20%;"></div>
+            </div>
+          </div>
+          <button class="tv-card" id="btn-reset-checklist" tabindex="0" style="padding: 10px 16px; font-size: 12px; font-weight: 700; background: #1e293b;">
+            🔄 Reset
+          </button>
+        </div>
+
+        <div class="checklist-items-grid" id="checklist-items-list">
+          <!-- Rendered via JavaScript -->
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 2: AI SAFETY ASSISTANT (GOOGLE GEMMA 4)
+           =================================================================== -->
+      <section class="screen" id="screen-ai" aria-labelledby="ai-heading">
+        <div class="ai-assistant-container">
+          
+          <!-- Left: Remote Prompts List -->
+          <div class="ai-prompts-panel">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px;">
+              🎯 Select Hazard Query
+            </h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+              Use TV Remote D-pad to select an emergency scenario for immediate plain-language synthesis:
+            </p>
+
+            <button class="prompt-chip-btn tv-card" data-prompt="Synthesize immediate flood evacuation and drinking water safety protocols." tabindex="0">
+              <span style="font-size: 20px;">🌊</span>
+              <span>Flood evacuation & drinking water safety</span>
+            </button>
+            <button class="prompt-chip-btn tv-card" data-prompt="What should family members do during an earthquake tremor?" tabindex="0">
+              <span style="font-size: 20px;">🌋</span>
+              <span>Earthquake tremor & aftershock safety</span>
+            </button>
+            <button class="prompt-chip-btn tv-card" data-prompt="Residential fire evacuation rules and stairwell safety." tabindex="0">
+              <span style="font-size: 20px;">🔥</span>
+              <span>Residential fire & smoke evacuation</span>
+            </button>
+            <button class="prompt-chip-btn tv-card" data-prompt="Gale-force storm precautions and power outage guidance." tabindex="0">
+              <span style="font-size: 20px;">⛈️</span>
+              <span>Gale-force storm rooftop precautions</span>
+            </button>
+            <button class="prompt-chip-btn tv-card" data-prompt="Summarize verified threats and registered shelters in the active sector." tabindex="0">
+              <span style="font-size: 20px;">🛡️</span>
+              <span>Sector situation briefing & shelters</span>
+            </button>
+          </div>
+
+          <!-- Right: AI Output Display -->
+          <div class="ai-response-box">
+            <div class="ai-meta-badge">
+              <span id="ai-status-pill" style="font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; border: 1px solid #10b981; background: rgba(16, 185, 129, 0.15); color: #34d399;">
+                CONNECTED: GOOGLE GEMMA 4
+              </span>
+              <span id="ai-query-badge" style="font-size: 12px; color: #38bdf8;">
+                Ready for query
+              </span>
+            </div>
+            <div class="ai-output-text" id="ai-output-box">
+Select an emergency query on the left using your Fire TV remote to view grounded safety guidance.
+
+DisasterShield AI is strictly constrained to Google Gemma 4 models (or transparent rule-based templates if offline). It does not hallucinate unofficial directives, safe routes, or casualties.
+            </div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 10px;">
+              *Notice: Generated briefings are informational aids. Follow emergency instructions issued by the District Magistrate and State Disaster Authority.*
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 3: DISASTER & HAZARD GUIDANCE
+           =================================================================== -->
+      <section class="screen" id="screen-guidance" aria-labelledby="guidance-heading">
+        <div class="guidance-categories-bar" role="tablist">
+          <button class="guidance-tab-btn active tv-card" data-cat="flood" tabindex="0">🌊 Monsoon Flood</button>
+          <button class="guidance-tab-btn tv-card" data-cat="fire" tabindex="0">🔥 Structural Fire</button>
+          <button class="guidance-tab-btn tv-card" data-cat="earthquake" tabindex="0">🌋 Earthquake</button>
+          <button class="guidance-tab-btn tv-card" data-cat="storm" tabindex="0">⛈️ Cyclone / Storm</button>
+          <button class="guidance-tab-btn tv-card" data-cat="landslide" tabindex="0">⛰️ Landslide</button>
+          <button class="guidance-tab-btn tv-card" data-cat="general" tabindex="0">🛡️ General Readiness</button>
+        </div>
+
+        <h2 id="guidance-title" style="font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 16px;">
+          🌊 Monsoon Flooding & Inundation Safety
+        </h2>
+
+        <div class="guidance-content-grid">
+          <div class="dos-card">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: #34d399; margin-bottom: 16px;">
+              ✅ WHAT YOU SHOULD DO
+            </h3>
+            <div id="guidance-dos-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="donts-card">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: #f87171; margin-bottom: 16px;">
+              ❌ CRITICAL DON'TS
+            </h3>
+            <div id="guidance-donts-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 4: TACTICAL TV MAP
+           =================================================================== -->
+      <section class="screen" id="screen-map" aria-labelledby="map-heading">
+        <div class="map-screen-layout">
+          <div id="firetv-map-view"></div>
+          
+          <div class="tv-panel" style="display: flex; flex-direction: column;">
+            <div class="panel-title">
+              <span>📍 Tactical POI Ledger</span>
+            </div>
+            <div class="map-poi-list">
+              <div class="poi-card tv-card" tabindex="0">
+                <strong style="color: #ef4444;">Sangam Ghat Inundation Zone</strong><br>
+                <span style="font-size: 12px; color: var(--text-muted);">High Severity • Flood Category</span><br>
+                <span style="font-size: 11px; color: var(--text-dim);">Coordinates: 25.4358° N, 81.8463° E</span>
+              </div>
+              <div class="poi-card tv-card" tabindex="0">
+                <strong style="color: #10b981;">Swaroop Rani Nehru Medical Depot</strong><br>
+                <span style="font-size: 12px; color: var(--text-muted);">Verified Hospital Resource • 850 Beds</span><br>
+                <span style="font-size: 11px; color: var(--text-dim);">Coordinates: 25.4412° N, 81.8402° E</span>
+              </div>
+              <div class="poi-card tv-card" tabindex="0">
+                <strong style="color: #f59e0b;">Civil Lines Transformer Check</strong><br>
+                <span style="font-size: 12px; color: var(--text-muted);">Moderate Severity • Electrical Isolation</span><br>
+                <span style="font-size: 11px; color: var(--text-dim);">Coordinates: 25.4518° N, 81.8315° E</span>
+              </div>
+              <div class="poi-card tv-card" tabindex="0">
+                <strong style="color: #10b981;">Daraganj Primary Relief Camp</strong><br>
+                <span style="font-size: 12px; color: var(--text-muted);">Registered Shelter • Capacity 1200</span><br>
+                <span style="font-size: 11px; color: var(--text-dim);">Coordinates: 25.4290° N, 81.8590° E</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 5: TRUSTED EMERGENCY RESOURCES & HELPLINES
+           =================================================================== -->
+      <section class="screen" id="screen-resources" aria-labelledby="resources-heading">
+        <div class="helplines-hero-grid">
+          <div class="helpline-box tv-card" tabindex="0">
+            <div class="helpline-number">112</div>
+            <div class="helpline-name">National Emergency Support</div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Police, Fire & Medical</div>
+          </div>
+          <div class="helpline-box tv-card" tabindex="0">
+            <div class="helpline-number">1077</div>
+            <div class="helpline-name">Disaster Control Room</div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">State & District EOC</div>
+          </div>
+          <div class="helpline-box tv-card" tabindex="0">
+            <div class="helpline-number">108</div>
+            <div class="helpline-name">Ambulance Services</div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Emergency Medical Triage</div>
+          </div>
+          <div class="helpline-box tv-card" tabindex="0">
+            <div class="helpline-number">101</div>
+            <div class="helpline-name">Fire Rescue Service</div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Municipal Fire Stations</div>
+          </div>
+        </div>
+
+        <div class="tv-panel">
+          <div class="panel-title">🏥 Registered Facilities Catalog (Sector: <span class="active-sector-label">Prayagraj</span>)</div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
+            <div class="tv-card" style="padding: 16px;">
+              <strong style="color: #fff; font-size: 16px;">Swaroop Rani Nehru (SRN) Hospital</strong><br>
+              <span style="font-size: 13px; color: #34d399;">Type: Tertiary Medical Center | Status: Operational</span><br>
+              <span style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 6px;">
+                Emergency ward with critical trauma triage, ICU ventilators, and standby generator reserves.
+              </span>
+            </div>
+            <div class="tv-card" style="padding: 16px;">
+              <strong style="color: #fff; font-size: 16px;">Daraganj Multi-Purpose Flood Relief Shelter</strong><br>
+              <span style="font-size: 13px; color: #38bdf8;">Type: Community Shelter | Status: Active Standby</span><br>
+              <span style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 6px;">
+                Capacity for 1,200 persons with dry rations, water purification packs, and municipal medical kits.
+              </span>
+            </div>
+            <div class="tv-card" style="padding: 16px;">
+              <strong style="color: #fff; font-size: 16px;">Civil Defense Ward 4 Relief Depot</strong><br>
+              <span style="font-size: 13px; color: #fbbf24;">Type: Supply Depot | Status: Operational</span><br>
+              <span style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 6px;">
+                Distribution point for inflatable rescue boats, life jackets, and portable emergency communication radios.
+              </span>
+            </div>
+            <div class="tv-card" style="padding: 16px;">
+              <strong style="color: #fff; font-size: 16px;">NDRF Regional Staging Base</strong><br>
+              <span style="font-size: 13px; color: #34d399;">Type: Specialized Rescue Force | Status: Deployed</span><br>
+              <span style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 6px;">
+                Deep-water boat teams, collapsed structure search and rescue (CSSR), and canine tracking squads.
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 6: 3D DIGITAL TWIN SIMULATION
+           =================================================================== -->
+      <section class="screen" id="screen-simulation" aria-labelledby="sim-heading">
+        <div class="simulation-tv-container">
+          <iframe id="simulation-canvas-frame" title="3D Digital Twin Viewer" src="/simulation-embed" style="border: none;"></iframe>
+
+          <div class="sim-controls-panel">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: #fff;">
+              🎮 Remote 3D Controls
+            </h3>
+            <p style="font-size: 12px; color: var(--text-muted);">
+              Procedural WebGL digital twin rendering topographic water elevations, structural fires, and seismic shocks.
+            </p>
+
+            <button class="tv-card action-tile-btn" onclick="document.getElementById('simulation-canvas-frame').contentWindow.postMessage({action:'switchMode', mode:'Flood'}, '*')" tabindex="0">
+              <span>🌊 Flood Inundation Physics</span>
+            </button>
+            <button class="tv-card action-tile-btn" onclick="document.getElementById('simulation-canvas-frame').contentWindow.postMessage({action:'switchMode', mode:'Fire'}, '*')" tabindex="0">
+              <span>🔥 Dynamic Fire Particles</span>
+            </button>
+            <button class="tv-card action-tile-btn" onclick="document.getElementById('simulation-canvas-frame').contentWindow.postMessage({action:'switchMode', mode:'Earthquake'}, '*')" tabindex="0">
+              <span>🌋 Seismic Wave Tremor</span>
+            </button>
+            <button class="tv-card action-tile-btn" onclick="document.getElementById('simulation-canvas-frame').contentWindow.postMessage({action:'switchMode', mode:'Storm'}, '*')" tabindex="0">
+              <span>⛈️ Severe Storm Rain Physics</span>
+            </button>
+            <button class="tv-card action-tile-btn" onclick="document.getElementById('simulation-canvas-frame').contentWindow.postMessage({action:'resetCamera'}, '*')" tabindex="0" style="margin-top: auto; background: #1e293b;">
+              <span>🔄 Reset 3D Camera</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 7: SETTINGS & SECTOR SWITCHER
+           =================================================================== -->
+      <section class="screen" id="screen-settings" aria-labelledby="settings-heading">
+        <div class="settings-grid">
+          
+          <!-- City Sector Switcher -->
+          <div class="settings-group">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 12px;">
+              📍 Select Demonstration Sector
+            </h3>
+            <button class="city-option-btn tv-card active" data-city="Prayagraj, Uttar Pradesh" tabindex="0">
+              <div>
+                <strong>Prayagraj, Uttar Pradesh</strong><br>
+                <span style="font-size: 12px; color: var(--text-muted);">Ganga & Yamuna Sangam Confluence</span>
+              </div>
+              <span>✓</span>
+            </button>
+            <button class="city-option-btn tv-card" data-city="Lucknow, Uttar Pradesh" tabindex="0">
+              <div>
+                <strong>Lucknow, Uttar Pradesh</strong><br>
+                <span style="font-size: 12px; color: var(--text-muted);">Gomti River Basin Drainage Corridor</span>
+              </div>
+            </button>
+            <button class="city-option-btn tv-card" data-city="Varanasi, Uttar Pradesh" tabindex="0">
+              <div>
+                <strong>Varanasi, Uttar Pradesh</strong><br>
+                <span style="font-size: 12px; color: var(--text-muted);">Ancient Ghats & Riverfront Quarters</span>
+              </div>
+            </button>
+            <button class="city-option-btn tv-card" data-city="New Delhi, India" tabindex="0">
+              <div>
+                <strong>New Delhi, India</strong><br>
+                <span style="font-size: 12px; color: var(--text-muted);">Yamuna Floodplain Corridor</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- App Information & Diagnostics -->
+          <div class="settings-group">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 12px;">
+              🔧 Diagnostics & Preferences
+            </h3>
+            
+            <button class="tv-card" id="btn-toggle-audio" tabindex="0" style="width: 100%; text-align: left; padding: 14px 18px; margin-bottom: 12px; font-weight: 600;">
+              🔊 Sound: ON
+            </button>
+
+            <button class="tv-card" id="btn-probe-gemma" tabindex="0" style="width: 100%; text-align: left; padding: 14px 18px; margin-bottom: 12px; font-weight: 600;">
+              🤖 Probe Google Gemma 4 Endpoint
+            </button>
+
+            <div style="background: rgba(255, 255, 255, 0.04); border-radius: 10px; padding: 14px; margin-top: 16px; font-size: 12px; line-height: 1.6; color: var(--text-muted);">
+              <strong>DisasterShield AI — Fire TV Edition</strong><br>
+              Target Platform: Amazon Fire OS / Android TV Leanback<br>
+              AI Architecture: Strictly Google Gemma 4 (`gemma4:e2b`)<br>
+              Telemetry: Open-Meteo Public API<br>
+              License: Apache 2.0 Open Source
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="./tv_nav.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

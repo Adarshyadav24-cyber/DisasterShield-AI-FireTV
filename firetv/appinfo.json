@@ -1,0 +1,17 @@
+{
+  "id": "com.disastershield.firetv",
+  "version": "1.0.0",
+  "type": "web",
+  "main": "index.html",
+  "title": "DisasterShield AI",
+  "icon": "icon-512.png",
+  "uiRevision": "2",
+  "resolution": "1920x1080",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "features": [
+    "leanback",
+    "dpad-navigation",
+    "spatial-navigation"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "DisasterShield AI - Fire TV",
+  "short_name": "DisasterShield",
+  "description": "Prepare Smarter. Respond Safer. Fire TV Disaster Preparedness & AI Command Center.",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#060b14",
+  "theme_color": "#0ea5e9",
+  "categories": ["utilities", "news", "safety"],
+  "icons": [
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

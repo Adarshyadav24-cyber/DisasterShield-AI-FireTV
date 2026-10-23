@@ -4,6 +4,8 @@ Tagline: Early Awareness. Verified Information. Safer Decisions.
 """
 from __future__ import annotations
 import sys
+import time
+import hmac
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -251,6 +253,16 @@ sector_short_city = active_city_meta["city"]
 with st.sidebar:
     st.markdown("### 🛡️ DisasterShield AI")
     st.caption(f"**{config.TAGLINE}**")
+    st.markdown(
+        """
+        <div style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #38bdf8;">
+            <div style="font-weight: 700; color: #fff; font-size: 13px;">📺 Amazon Fire TV Edition</div>
+            <div style="font-size: 11px; color: #e0f2fe; margin-top: 2px;">10-Foot UI & D-Pad Remote Ready</div>
+            <a href="http://localhost:8000/" target="_blank" style="display: inline-block; margin-top: 6px; background: #fff; color: #0284c7; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 800; text-decoration: none;">Launch Fire TV UI ↗</a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     st.markdown("---")
 
     # Primary Location Selector
@@ -899,10 +911,69 @@ with tabs[4]:
     st.subheader("🔐 Trusted Administrator Verification Workflow")
     st.caption("Authorized emergency operations personnel review incoming public reports, confirm ground validity, and update verification records.")
 
-    # Simple secure PIN verification for hackathon demo
-    admin_pin = st.text_input("Enter Administrator PIN", type="password", help="Default demo PIN: 1122")
-    if admin_pin == config.ADMIN_VERIFY_PIN:
-        st.success("🔓 Administrator Console Unlocked.")
+    st.markdown(
+        """
+        <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b; padding: 10px 14px; border-radius: 6px; font-size: 12px; margin-bottom: 14px; color: #fde68a;">
+            <strong>⚠️ SECURITY DISCLOSURE:</strong> PIN-based verification is designed strictly for local evaluation and hackathon demonstration. 
+            Production emergency deployments must integrate organizational Single Sign-On (SSO), OAuth 2.0 / OIDC, or municipal IAM credentials.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    now_ts = time.time()
+    st.session_state.setdefault("admin_authenticated", False)
+    st.session_state.setdefault("admin_failed_attempts", 0)
+    st.session_state.setdefault("admin_lockout_until", 0.0)
+
+    # Check lockout
+    is_locked_out = now_ts < st.session_state["admin_lockout_until"]
+    if is_locked_out:
+        remaining_secs = int(st.session_state["admin_lockout_until"] - now_ts)
+        st.error(f"⛔ Too many failed PIN attempts. Console locked for {remaining_secs}s to prevent brute-forcing.")
+    elif not st.session_state["admin_authenticated"]:
+        admin_col1, admin_col2 = st.columns([3, 1])
+        with admin_col1:
+            admin_pin = st.text_input(
+                "Enter Administrator Verification PIN",
+                type="password",
+                help="Set ADMIN_VERIFY_PIN in .env (Default demo: 1122)",
+                key="admin_pin_input",
+            )
+        with admin_col2:
+            st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
+            unlock_btn = st.button("Unlock Console", width="stretch")
+
+        if unlock_btn:
+            # Timing-safe constant-time string comparison
+            target_pin = str(config.ADMIN_VERIFY_PIN).strip()
+            provided_pin = str(admin_pin).strip()
+            if hmac.compare_digest(provided_pin, target_pin):
+                st.session_state["admin_authenticated"] = True
+                st.session_state["admin_failed_attempts"] = 0
+                st.success("🔓 Administrator Console Unlocked.")
+                st.rerun()
+            else:
+                st.session_state["admin_failed_attempts"] += 1
+                if st.session_state["admin_failed_attempts"] >= 5:
+                    st.session_state["admin_lockout_until"] = time.time() + 45.0
+                    st.error("⛔ Maximum attempts exceeded. Console locked for 45 seconds.")
+                else:
+                    attempts_left = 5 - st.session_state["admin_failed_attempts"]
+                    st.error(f"❌ Invalid PIN. {attempts_left} attempts remaining before temporary lockout.")
+
+    if st.session_state["admin_authenticated"]:
+        st.markdown(
+            f"""
+            <div style="display:flex;justify-content:space-between;align-items:center;background:#0d1c38;border:1px solid #1e3a8a;padding:10px 16px;border-radius:8px;margin-bottom:14px;">
+                <span style="color:#60a5fa;font-size:13px;font-weight:700;">🔓 Administrator Session Active (Authenticated)</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        if st.button("🔒 Sign Out & Lock Console", key="admin_logout_btn"):
+            st.session_state["admin_authenticated"] = False
+            st.rerun()
 
         all_reports = incident_mgr.get_all_incidents()
         unverified_list = [i for i in all_reports if i.get("verification_status") in ["UNVERIFIED", "INVESTIGATING"]]
@@ -949,8 +1020,6 @@ with tabs[4]:
                             st.error(msg)
         else:
             st.info("No unverified or investigating reports pending review.")
-    else:
-        st.warning("Please enter the administrator PIN (Default: 1122) to access verification controls.")
 
 # =============================================================================
 # TAB 5: GEMMA 4 AI INTELLIGENCE HUB
