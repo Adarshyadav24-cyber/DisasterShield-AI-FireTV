@@ -16,10 +16,10 @@
 
 - **Project Name:** **DisasterShield AI**
 - **Tagline:** Prepare Smarter. Respond Safer.
-- **Track:** Amazon Developer Hackathon 2026 — **Fire TV Track**
-- **GitHub Repository:** [https://github.com/Adarshyadav24-cyber/DisasterShield-AI](https://github.com/Adarshyadav24-cyber/DisasterShield-AI)
+- **GitHub Repository (Fire TV Edition):** [https://github.com/Adarshyadav24-cyber/DisasterShield-AI-FireTV](https://github.com/Adarshyadav24-cyber/DisasterShield-AI-FireTV)
+- **Deployment Platform:** Render (Web Service)
 - **Live Streamlit Web App:** [https://disastershield-ai-adarshyadav.streamlit.app/](https://disastershield-ai-adarshyadav.streamlit.app/)
-- **Local Fire TV Application:** `http://localhost:8000/`
+- **Fire TV Application:** `http://localhost:8000/` (Local) / Render Deployed URL
 
 ---
 

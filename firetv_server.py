@@ -245,5 +245,5 @@ def run_server(port: int = 8000, host: str = "0.0.0.0"):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("FIRETV_PORT", 8000))
+    port = int(os.environ.get("PORT", os.environ.get("FIRETV_PORT", 8000)))
     run_server(port=port)
