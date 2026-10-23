@@ -293,6 +293,7 @@
         setTimeout(() => this.initOrUpdateMap(), 100);
       } else if (screenId === 'simulation') {
         setTimeout(() => this.initSimulationFrame(), 100);
+        setTimeout(() => this.initSimulationFrame(), 350);
       }
 
       // Focus first element on the newly active screen
@@ -726,9 +727,20 @@
 
     initSimulationFrame() {
       const frame = document.getElementById('simulation-canvas-frame');
-      if (frame && !frame.src) {
-        // Load the 3D simulation endpoint or embedded HTML
-        frame.src = '/simulation-embed';
+      if (!frame) return;
+
+      // Ensure proper relative source for static hosting (Vercel) & local server
+      if (!frame.src || frame.src.endsWith('/simulation-embed')) {
+        frame.src = './simulation_embed.html';
+      }
+
+      // Notify the embedded Three.js scene to recalculate dimensions now that its container is visible
+      try {
+        if (frame.contentWindow) {
+          frame.contentWindow.postMessage({ action: 'resize' }, '*');
+        }
+      } catch (e) {
+        console.warn('Simulation frame postMessage warning:', e);
       }
     }
   }

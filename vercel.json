@@ -1,0 +1,21 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/simulation-embed",
+      "destination": "/firetv/simulation_embed.html"
+    },
+    {
+      "source": "/simulation_embed.html",
+      "destination": "/firetv/simulation_embed.html"
+    },
+    {
+      "source": "/",
+      "destination": "/firetv/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/firetv/$1"
+    }
+  ]
+}

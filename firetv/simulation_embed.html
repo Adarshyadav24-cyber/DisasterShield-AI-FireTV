@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DisasterShield AI — 3D Digital Twin Simulation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #070d19;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #e2e8f0;
+    }
+    #canvas-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    
+    /* Top Telemetry & Mode Bar */
+    .telemetry-bar {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 20, 38, 0.90);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      border-radius: 10px;
+      padding: 8px 16px;
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .telemetry-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-pill {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+    .demo-watermark {
+      background: rgba(220, 38, 38, 0.2);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .telemetry-metrics {
+      display: flex;
+      gap: 14px;
+      font-size: 11px;
+    }
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .metric-item span:first-child {
+      color: #94a3b8;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .metric-item span:last-child {
+      font-weight: 700;
+      color: #38bdf8;
+      font-size: 12px;
+      font-family: monospace;
+    }
+    
+    /* Interactive Simulation Control HUD */
+    .controls-panel {
+      position: absolute;
+      top: 68px;
+      left: 14px;
+      width: 260px;
+      background: rgba(10, 20, 38, 0.90);
+      border: 1px solid rgba(56, 189, 248, 0.24);
+      border-radius: 10px;
+      padding: 12px;
+      backdrop-filter: blur(8px);
+      z-index: 90;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    }
+    .panel-header {
+      font-size: 11px;
+      font-weight: 700;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      padding-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .control-group {
+      margin-bottom: 10px;
+    }
+    .control-group label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #cbd5e1;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .btn-mode-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .btn-mode {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 5px 2px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .btn-mode:hover {
+      background: #334155;
+      color: #ffffff;
+    }
+    .btn-mode.active {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+    
+    input[type=range] {
+      width: 100%;
+      height: 5px;
+      background: #1e293b;
+      border-radius: 4px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #38bdf8;
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+    }
+    
+    .toggle-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .btn-toggle {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 5px 4px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-toggle.active {
+      background: #0369a1;
+      border-color: #38bdf8;
+      color: #ffffff;
+    }
+
+    /* WebGL Error / Diagnostic Overlay */
+    .webgl-error-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #0b1329;
+      border: 2px solid #ef4444;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      max-width: 440px;
+      box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
+      z-index: 1000;
+      display: none;
+    }
+    .webgl-error-overlay h3 {
+      color: #f87171;
+      margin: 10px 0 6px;
+      font-size: 16px;
+    }
+    .webgl-error-overlay p {
+      color: #cbd5e1;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* Camera navigation hints */
+    .camera-hints {
+      position: absolute;
+      top: 68px;
+      right: 14px;
+      background: rgba(10, 20, 38, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 9px;
+      color: #94a3b8;
+      z-index: 80;
+      pointer-events: none;
+    }
+  </style>
+
+  <!-- Load Local Three.js with robust CDN Fallbacks -->
+  <script src="./three.min.js" onerror="this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'"></script>
+  <script src="./OrbitControls.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js'"></script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <!-- WebGL Diagnostic Overlay -->
+  <div id="webgl-error-box" class="webgl-error-overlay">
+    <span style="font-size: 32px;">⚠️</span>
+    <h3>WebGL Graphics Acceleration Unavailable</h3>
+    <p>Your browser or television device could not initialize a WebGL 3D context. Please check that hardware acceleration is enabled in browser settings or try a WebGL-compatible browser.</p>
+  </div>
+
+  <!-- Top Telemetry Bar -->
+  <div class="telemetry-bar">
+    <div class="telemetry-left">
+      <span class="brand-pill">3D DIGITAL TWIN</span>
+      <span class="demo-watermark">⚠️ DEMO SIMULATION</span>
+      <span style="font-size: 11px; font-weight: 600; color: #f1f5f9;" id="sector-display">Prayagraj Sector</span>
+    </div>
+    <div class="telemetry-metrics">
+      <div class="metric-item">
+        <span>Active Mode</span>
+        <span id="hud-mode-display">FLOOD</span>
+      </div>
+      <div class="metric-item">
+        <span>Water Elevation</span>
+        <span id="hud-water-display">3.5 m</span>
+      </div>
+      <div class="metric-item">
+        <span>Seismic Tremor</span>
+        <span id="hud-shake-display">4.2</span>
+      </div>
+      <div class="metric-item">
+        <span>Rainfall Rate</span>
+        <span id="hud-rain-display">45 mm/h</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Camera Hints -->
+  <div class="camera-hints">
+    🖱️ Left: Orbit | Right: Pan | Scroll: Zoom
+  </div>
+
+  <!-- Controls Panel -->
+  <div class="controls-panel">
+    <div class="panel-header">
+      <span>Simulation Matrix</span>
+      <button id="btn-play-pause" onclick="togglePlayPause()" style="background:#0284c7;border:none;color:white;border-radius:4px;padding:2px 8px;font-size:9px;cursor:pointer;">PAUSE</button>
+    </div>
+
+    <!-- Mode Buttons -->
+    <div class="control-group">
+      <label><span>Scenario Mode</span></label>
+      <div class="btn-mode-row">
+        <button class="btn-mode active" id="btn-mode-flood" onclick="setDisasterMode('Flood')">🌊 FLOOD</button>
+        <button class="btn-mode" id="btn-mode-fire" onclick="setDisasterMode('Fire')">🔥 FIRE</button>
+        <button class="btn-mode" id="btn-mode-earthquake" onclick="setDisasterMode('Earthquake')">🌋 QUAKE</button>
+        <button class="btn-mode" id="btn-mode-storm" onclick="setDisasterMode('Storm')">⛈️ STORM</button>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="control-group" id="group-water">
+      <label><span>Flood Water Elevation</span><span id="val-water">3.5 m</span></label>
+      <input type="range" id="slider-water" min="0" max="12" step="0.2" value="3.5" oninput="updateWaterLevel(this.value)">
+    </div>
+    <div class="control-group" id="group-shake">
+      <label><span>Earthquake Amplitude</span><span id="val-shake">4.2</span></label>
+      <input type="range" id="slider-shake" min="0" max="10" step="0.5" value="4.2" oninput="updateShake(this.value)">
+    </div>
+    <div class="control-group" id="group-rain">
+      <label><span>Precipitation Velocity</span><span id="val-rain">45 mm/h</span></label>
+      <input type="range" id="slider-rain" min="0" max="100" step="5" value="45" oninput="updateRain(this.value)">
+    </div>
+
+    <div class="toggle-row">
+      <button class="btn-toggle active" id="toggle-incidents" onclick="toggleIncidents()">Incidents (ON)</button>
+      <button class="btn-toggle active" id="toggle-resources" onclick="toggleResources()">Facilities (ON)</button>
+      <button class="btn-toggle" onclick="resetCamera()">Reset View</button>
+    </div>
+  </div>
+
+  <script>
+    // Fallback data for standalone static execution (Vercel / GitHub Pages / offline)
+    const DEFAULT_INCIDENTS = [
+      { id: "INC-001", title: "Rising water level at Sangam Ghat", category: "flood", severity: "High", latitude: 25.4358, longitude: 81.8463, location_name: "Sangam Ghat" },
+      { id: "INC-002", title: "Civil Lines transformer check", category: "fire", severity: "Moderate", latitude: 25.4518, longitude: 81.8315, location_name: "Civil Lines" },
+      { id: "INC-003", title: "Waterlogging in basement", category: "flood", severity: "Low", latitude: 25.4290, longitude: 81.8590, location_name: "Daraganj Sector" }
+    ];
+    const DEFAULT_RESOURCES = [
+      { id: "RES-001", name: "SRN Hospital", type: "Medical Depot", latitude: 25.4412, longitude: 81.8402 },
+      { id: "RES-002", name: "Daraganj Relief Camp", type: "Shelter", latitude: 25.4285, longitude: 81.8742 }
+    ];
+
+    let currentDisasterMode = "Flood";
+    let currentWaterLevel = 3.5;
+    let currentShakeIntensity = 4.2;
+    let currentRainRate = 45.0;
+    let isSimulationPaused = false;
+    let showIncidentsFlag = true;
+    let showResourcesFlag = true;
+
+    // Three.js Core Objects
+    let scene, camera, renderer, controls;
+    let terrainMesh, riverWaterMesh;
+    let buildingsGroup, incidentsGroup, resourcesGroup, roadGroup;
+    let fireParticles = [], rainGeometry;
+    let firePointLight, lightningLight;
+    let clock, animationFrameId;
+
+    // Test WebGL support
+    function checkWebGL() {
+      try {
+        const canvas = document.createElement('canvas');
+        return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function init() {
+      if (!checkWebGL()) {
+        document.getElementById('webgl-error-box').style.display = 'block';
+        return;
+      }
+
+      if (typeof THREE === 'undefined') {
+        setTimeout(init, 100);
+        return;
+      }
+
+      const container = document.getElementById('canvas-container');
+      let width = (container && container.clientWidth) || window.innerWidth || 800;
+      let height = (container && container.clientHeight) || window.innerHeight || 500;
+      if (width < 50) width = 800;
+      if (height < 50) height = 500;
+
+      clock = new THREE.Clock();
+
+      // 1. Scene & Fog
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x070d19);
+      scene.fog = new THREE.FogExp2(0x070d19, 0.0035);
+
+      // 2. Camera
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.5, 1000);
+      camera.position.set(0, 75, 130);
+
+      // 3. Renderer
+      try {
+        renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+      } catch (e) {
+        console.error("Renderer initialization failed:", e);
+        const errBox = document.getElementById('webgl-error-box');
+        if (errBox) {
+          errBox.style.display = 'block';
+          errBox.innerHTML = `
+            <span style="font-size: 32px;">⚠️</span>
+            <h3>WebGL Graphics Acceleration Unavailable</h3>
+            <p>${e.message || 'WebGL context could not be created.'}</p>
+            <p style="margin-top: 8px; font-size: 11px; color: #94a3b8;">Try enabling hardware acceleration in your browser settings or test on a WebGL-compatible device.</p>
+          `;
+        }
+        return;
+      }
+
+      // 4. OrbitControls
+      if (typeof THREE.OrbitControls !== 'undefined') {
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2.1;
+        controls.minDistance = 20;
+        controls.maxDistance = 350;
+        controls.target.set(0, 0, 0);
+      }
+
+      // 5. Lighting
+      const ambientLight = new THREE.AmbientLight(0x1e293b, 1.2);
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0x38bdf8, 1.4);
+      directionalLight.position.set(60, 100, 40);
+      directionalLight.castShadow = true;
+      scene.add(directionalLight);
+
+      firePointLight = new THREE.PointLight(0xff6600, 0, 40);
+      firePointLight.position.set(10, 8, -5);
+      scene.add(firePointLight);
+
+      lightningLight = new THREE.DirectionalLight(0xdbeafe, 0);
+      lightningLight.position.set(-20, 120, -30);
+      scene.add(lightningLight);
+
+      // 6. Groups
+      buildingsGroup = new THREE.Group();
+      incidentsGroup = new THREE.Group();
+      resourcesGroup = new THREE.Group();
+      roadGroup = new THREE.Group();
+      scene.add(buildingsGroup);
+      scene.add(incidentsGroup);
+      scene.add(resourcesGroup);
+      scene.add(roadGroup);
+
+      // 7. World Generation
+      createTerrain();
+      createRiver();
+      createRoads();
+      createCity();
+      createIncidents();
+      createResources();
+      createFire();
+      createRain();
+
+      // Listeners
+      window.addEventListener('resize', onWindowResize, false);
+      window.addEventListener('message', handleWindowMessage, false);
+
+      applyDisasterMode(currentDisasterMode);
+      animate();
+    }
+
+    function createTerrain() {
+      const geo = new THREE.PlaneGeometry(320, 320, 48, 48);
+      geo.rotateX(-Math.PI / 2);
+      const pos = geo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const z = pos.getZ(i);
+        const riverCenter = Math.sin(x * 0.02) * 25 + Math.cos(z * 0.02) * 15;
+        const dist = Math.abs(z - riverCenter);
+        let y = (dist < 22) ? (-5.0 + Math.pow(dist / 22, 2) * 3.5) : (Math.sin(x * 0.04) * 1.5 + (dist - 22) * 0.05);
+        pos.setY(i, y);
+      }
+      geo.computeVertexNormals();
+
+      const mat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.85, metalness: 0.2, flatShading: true });
+      terrainMesh = new THREE.Mesh(geo, mat);
+      terrainMesh.receiveShadow = true;
+      scene.add(terrainMesh);
+
+      const wireframe = new THREE.LineSegments(new THREE.WireframeGeometry(geo), new THREE.LineBasicMaterial({ color: 0x1e3a5f, transparent: true, opacity: 0.35 }));
+      terrainMesh.add(wireframe);
+    }
+
+    function createRiver() {
+      const geo = new THREE.PlaneGeometry(320, 100, 48, 24);
+      geo.rotateX(-Math.PI / 2);
+      const mat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.1, metalness: 0.8, transparent: true, opacity: 0.72 });
+      riverWaterMesh = new THREE.Mesh(geo, mat);
+      riverWaterMesh.position.set(0, currentWaterLevel - 3.5, 0);
+      scene.add(riverWaterMesh);
+    }
+
+    function createRoads() {
+      const roadMat = new THREE.MeshBasicMaterial({ color: 0x334155 });
+      const road = new THREE.Mesh(new THREE.PlaneGeometry(300, 4).rotateX(-Math.PI / 2), roadMat);
+      road.position.set(0, 0.2, -15);
+      roadGroup.add(road);
+
+      const bridge = new THREE.Mesh(new THREE.BoxGeometry(6, 1.2, 90), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.6 }));
+      bridge.position.set(-10, 4.5, 0);
+      roadGroup.add(bridge);
+    }
+
+    function createCity() {
+      const bMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.5, roughness: 0.4 });
+      const winMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+
+      const sectors = [
+        { xRange: [15, 75], zRange: [20, 60], count: 24, maxH: 14 },
+        { xRange: [-75, -20], zRange: [-65, -20], count: 30, maxH: 26 },
+        { xRange: [-20, 35], zRange: [-70, -30], count: 25, maxH: 18 }
+      ];
+
+      sectors.forEach(sec => {
+        for (let i = 0; i < sec.count; i++) {
+          const bx = sec.xRange[0] + Math.random() * (sec.xRange[1] - sec.xRange[0]);
+          const bz = sec.zRange[0] + Math.random() * (sec.zRange[1] - sec.zRange[0]);
+          const bw = 4 + Math.random() * 5;
+          const bd = 4 + Math.random() * 5;
+          const bh = 5 + Math.random() * sec.maxH;
+
+          const bMesh = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, bd), bMat);
+          bMesh.position.set(bx, bh / 2, bz);
+          bMesh.castShadow = true;
+          bMesh.receiveShadow = true;
+          buildingsGroup.add(bMesh);
+
+          if (bh > 14) {
+            const win = new THREE.Mesh(new THREE.PlaneGeometry(bw * 0.7, bh * 0.6), winMat);
+            win.position.set(bx, bh / 2, bz + bd / 2 + 0.05);
+            buildingsGroup.add(win);
+          }
+        }
+      });
+    }
+
+    function createIncidents() {
+      incidentsGroup.clear();
+      DEFAULT_INCIDENTS.forEach(inc => {
+        const color = inc.severity === 'High' ? 0xdc2626 : (inc.severity === 'Moderate' ? 0xf59e0b : 0x10b981);
+        const pin = new THREE.Mesh(new THREE.ConeGeometry(2, 5, 8), new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.4 }));
+        pin.rotation.x = Math.PI;
+        pin.position.set((inc.longitude - 81.8463) * 800, 8, -(inc.latitude - 25.4358) * 800);
+        incidentsGroup.add(pin);
+      });
+    }
+
+    function createResources() {
+      resourcesGroup.clear();
+      DEFAULT_RESOURCES.forEach(res => {
+        const marker = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0284c7, emissiveIntensity: 0.3 }));
+        marker.position.set((res.longitude - 81.8463) * 800, 5, -(res.latitude - 25.4358) * 800);
+        resourcesGroup.add(marker);
+      });
+    }
+
+    function createFire() {
+      for (let i = 0; i < 35; i++) {
+        const mat = new THREE.MeshBasicMaterial({ color: (i % 2 === 0) ? 0xff4500 : 0xffa500, transparent: true, opacity: 0.8 });
+        const mesh = new THREE.Mesh(new THREE.DodecahedronGeometry(0.8 + Math.random() * 0.6), mat);
+        const base = new THREE.Vector3(12 + (Math.random() - 0.5) * 6, 2, -18 + (Math.random() - 0.5) * 6);
+        mesh.position.copy(base);
+        scene.add(mesh);
+        fireParticles.push({ mesh, base, speed: 0.15 + Math.random() * 0.25 });
+      }
+    }
+
+    function createRain() {
+      const count = 1500;
+      rainGeometry = new THREE.BufferGeometry();
+      const pos = new Float32Array(count * 3);
+      for (let i = 0; i < count * 3; i += 3) {
+        pos[i] = (Math.random() - 0.5) * 260;
+        pos[i + 1] = Math.random() * 90;
+        pos[i + 2] = (Math.random() - 0.5) * 260;
+      }
+      rainGeometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const mat = new THREE.PointsMaterial({ color: 0x93c5fd, size: 0.6, transparent: true, opacity: 0.65 });
+      const rain = new THREE.Points(rainGeometry, mat);
+      scene.add(rain);
+    }
+
+    // Window Message Listener (Remote Control D-pad & Parent Frame)
+    function handleWindowMessage(e) {
+      if (!e.data || typeof e.data !== 'object') return;
+      const data = e.data;
+      if (data.action === 'switchMode') {
+        setDisasterMode(data.mode);
+      } else if (data.action === 'resetCamera') {
+        resetCamera();
+      } else if (data.action === 'resize') {
+        onWindowResize();
+      }
+    }
+
+    function onWindowResize() {
+      if (!camera || !renderer) return;
+      const container = document.getElementById('canvas-container');
+      let width = (container && container.clientWidth) || window.innerWidth || 800;
+      let height = (container && container.clientHeight) || window.innerHeight || 500;
+      if (width < 50) width = 800;
+      if (height < 50) height = 500;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    }
+
+    function setDisasterMode(mode) {
+      currentDisasterMode = mode;
+      document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-mode-${mode.toLowerCase()}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      document.getElementById('hud-mode-display').textContent = mode.toUpperCase();
+
+      if (mode === 'Flood') {
+        updateWaterLevel(5.2);
+        updateShake(0.0);
+        updateRain(10);
+      } else if (mode === 'Fire') {
+        updateWaterLevel(1.5);
+        updateShake(0.0);
+        updateRain(0);
+      } else if (mode === 'Earthquake') {
+        updateWaterLevel(1.5);
+        updateShake(6.5);
+        updateRain(10);
+      } else if (mode === 'Storm') {
+        updateWaterLevel(3.0);
+        updateShake(0.0);
+        updateRain(75);
+      }
+    }
+
+    function applyDisasterMode(mode) {
+      setDisasterMode(mode);
+    }
+
+    function updateWaterLevel(val) {
+      currentWaterLevel = parseFloat(val);
+      document.getElementById('val-water').textContent = `${currentWaterLevel.toFixed(1)} m`;
+      document.getElementById('hud-water-display').textContent = `${currentWaterLevel.toFixed(1)} m`;
+      if (riverWaterMesh) riverWaterMesh.position.y = currentWaterLevel - 3.5;
+    }
+
+    function updateShake(val) {
+      currentShakeIntensity = parseFloat(val);
+      document.getElementById('val-shake').textContent = currentShakeIntensity.toFixed(1);
+      document.getElementById('hud-shake-display').textContent = currentShakeIntensity.toFixed(1);
+    }
+
+    function updateRain(val) {
+      currentRainRate = parseFloat(val);
+      document.getElementById('val-rain').textContent = `${currentRainRate.toFixed(0)} mm/h`;
+      document.getElementById('hud-rain-display').textContent = `${currentRainRate.toFixed(0)} mm/h`;
+    }
+
+    function togglePlayPause() {
+      isSimulationPaused = !isSimulationPaused;
+      document.getElementById('btn-play-pause').textContent = isSimulationPaused ? 'RESUME' : 'PAUSE';
+    }
+
+    function toggleIncidents() {
+      showIncidentsFlag = !showIncidentsFlag;
+      if (incidentsGroup) incidentsGroup.visible = showIncidentsFlag;
+      const btn = document.getElementById('toggle-incidents');
+      btn.textContent = `Incidents (${showIncidentsFlag ? 'ON' : 'OFF'})`;
+      btn.classList.toggle('active', showIncidentsFlag);
+    }
+
+    function toggleResources() {
+      showResourcesFlag = !showResourcesFlag;
+      if (resourcesGroup) resourcesGroup.visible = showResourcesFlag;
+      const btn = document.getElementById('toggle-resources');
+      btn.textContent = `Facilities (${showResourcesFlag ? 'ON' : 'OFF'})`;
+      btn.classList.toggle('active', showResourcesFlag);
+    }
+
+    function resetCamera() {
+      if (controls && camera) {
+        controls.target.set(0, 0, 0);
+        camera.position.set(0, 75, 130);
+      }
+    }
+
+    function animate() {
+      animationFrameId = requestAnimationFrame(animate);
+
+      if (!isSimulationPaused && clock) {
+        const time = clock.getElapsedTime();
+
+        // 1. Water Ripple
+        if (riverWaterMesh) {
+          const pos = riverWaterMesh.geometry.attributes.position;
+          for (let i = 0; i < pos.count; i++) {
+            const u = pos.getX(i);
+            const v = pos.getY(i);
+            pos.setZ(i, Math.sin(u * 0.08 + time * 1.8) * 0.35 + Math.cos(v * 0.08 + time * 1.5) * 0.25);
+          }
+          riverWaterMesh.geometry.attributes.position.needsUpdate = true;
+        }
+
+        // 2. Fire Particles
+        if (currentDisasterMode === 'Fire') {
+          fireParticles.forEach(fp => {
+            fp.mesh.position.y += fp.speed;
+            fp.mesh.position.x += (Math.random() - 0.5) * 0.15;
+            fp.mesh.position.z += (Math.random() - 0.5) * 0.15;
+            if (fp.mesh.position.y > 14.0) {
+              fp.mesh.position.copy(fp.base);
+            }
+          });
+          if (firePointLight) firePointLight.intensity = 2.0 + Math.sin(time * 12.0) * 0.8;
+        }
+
+        // 3. Earthquake Tremors
+        if (currentDisasterMode === 'Earthquake' && currentShakeIntensity > 0) {
+          const shakeAmp = currentShakeIntensity * 0.08;
+          const shake = Math.sin(time * 22.0) * shakeAmp;
+          if (terrainMesh) terrainMesh.position.set(shake, 0, shake);
+          if (buildingsGroup) buildingsGroup.position.set(shake, 0, shake);
+        } else {
+          if (terrainMesh) terrainMesh.position.set(0, 0, 0);
+          if (buildingsGroup) buildingsGroup.position.set(0, 0, 0);
+        }
+
+        // 4. Storm Rain & Lightning
+        if (currentDisasterMode === 'Storm' && rainGeometry) {
+          const positions = rainGeometry.attributes.position.array;
+          const speed = 1.2 + (currentRainRate / 100.0) * 1.8;
+          for (let i = 1; i < positions.length; i += 3) {
+            positions[i] -= speed;
+            if (positions[i] < 0) positions[i] = 90;
+          }
+          rainGeometry.attributes.position.needsUpdate = true;
+
+          if (Math.random() < 0.02 && currentRainRate > 20) {
+            if (lightningLight) lightningLight.intensity = 3.5;
+          } else if (lightningLight) {
+            lightningLight.intensity = Math.max(0, lightningLight.intensity - 0.35);
+          }
+        }
+      }
+
+      if (controls) controls.update();
+      if (renderer && scene && camera) renderer.render(scene, camera);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

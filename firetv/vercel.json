@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/simulation-embed",
+      "destination": "/simulation_embed.html"
+    }
+  ]
+}
